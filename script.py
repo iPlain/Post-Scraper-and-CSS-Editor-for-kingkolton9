@@ -5,6 +5,7 @@ import sys
 import time
 import praw
 import OAuth2Util
+import configparser
 
 
 r = praw.Reddit('Script:postScraperAndCssEditor:v1.0 (by /u/iPlain')
@@ -21,12 +22,17 @@ colors = {
     '!AMEXplatinum': '.author[href$="/{0}"]:before {{ content: ""; background-position: 0px -80px; width: 32px;height: 20px; margin-top: 0px; }}',
     '!AMEXcenturion': '.author[href$="/{0}"]:before {{ content: ""; background-position: 0px -100px; width: 32px;height: 20px; margin-top: 0px; }}'}
 
-css_block_start = '/*AMEX_START*/' #Starting comment in CSS to define area for !AMEX CSS, note that any CSS within the start and end comments will be deleted.
-css_block_end = '/*AMEX_END*/' #Defines the end of the CSS block for above
-sleep_time = 60 * 10 #Amount of time the bot should wait until running again, in seconds
-uptime = 24 * 60 * 60 #How long the bot should update from a single post, in seconds
-subid = 'iPlain' #SubReddit to scrape from
-flair_string = 'test' #The flair that defines a thread to scrape from
+config = configparser.ConfigParser()
+config.read('config.ini')
+default = config['DEFAULT']
+
+css_block_start = default['css_block_start']  # Starting comment in CSS to define area for !AMEX CSS, note that any CSS within the start and end comments will be deleted.
+css_block_end = default['css_block_end']  # Defines the end of the CSS block for above
+sleep_time = int(default['sleep_time'])  # Amount of time the bot should wait until running again, in seconds
+uptime = int(default['uptime'])  # How long the bot should update from a single post, in seconds
+subid = default['subid']  # SubReddit to scrape from
+flair_string = default['flair_string']  # The flair that defines a thread to scrape from
+print(uptime, subid, type(uptime))
 
 subreddit = r.get_subreddit(subid)
 
